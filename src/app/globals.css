@@ -132,3 +132,40 @@
   0% { transform: translateY(-100%); }
   100% { transform: translateY(300%); }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(255,255,255,0.05); }
+  50% { box-shadow: 0 0 60px rgba(255,255,255,0.12); }
+}
+
+@keyframes drift {
+  0% { transform: translate(0,0) scale(1); }
+  100% { transform: translate(3%, -3%) scale(1.05); }
+}
+
+@keyframes wave-sway {
+  0% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-30px) scaleY(1.1); }
+  100% { transform: translateY(30px) scaleY(0.9); }
+}
+
+@layer utilities {
+  .font-square { font-family: var(--font-space-grotesk), sans-serif; }
+  .string-line {
+    animation: wave-sway ease-in-out infinite alternate;
+    transform-origin: center;
+  }
+  .floating-image { animation: float 6s ease-in-out infinite; }
+  .glow-pulse { animation: glow-pulse 6s ease-in-out infinite; }
+  .hero-glow {
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(255,255,255,0.04), transparent 40%);
+    animation: drift 15s ease-in-out infinite alternate;
+    filter: blur(60px);
+  }
+}

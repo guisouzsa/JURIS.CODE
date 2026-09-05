@@ -1,5 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
+function CheckBadge({ highlight = false }: { highlight?: boolean }) {
+  return (
+    <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${highlight ? 'bg-background' : 'bg-surface-container-high'}`}>
+      <span className={`material-symbols-outlined text-[12px] ${highlight ? 'text-primary' : 'text-accent-gray'}`}>check</span>
+    </div>
+  );
+}
 
 export default function Page() {
   const [lightboxMedia, setLightboxMedia] = useState<{src: string, type: 'image' | 'video'} | null>(null);
@@ -72,12 +81,6 @@ export default function Page() {
     { q: "Qual a diferença entre os planos Essencial, Profissional e Inteligente?", a: "O Essencial reúne os recursos fundamentais para organizar agenda, clientes, processos, tarefas e notas. O Profissional adiciona recursos como documentos, automações e relatórios. O Inteligente reúne esses recursos e adiciona funcionalidades avançadas de IA, como planejamento automático, prioridades inteligentes e triagem da rotina." }
   ];
 
-  const CheckBadge = ({ highlight = false }: { highlight?: boolean }) => (
-    <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${highlight ? 'bg-background' : 'bg-surface-container-high'}`}>
-      <span className={`material-symbols-outlined text-[12px] ${highlight ? 'text-primary' : 'text-accent-gray'}`}>check</span>
-    </div>
-  );
-
   return (
     <>
       {/* Lightbox Overlay */}
@@ -127,9 +130,14 @@ export default function Page() {
               <a className="font-label-nav text-label-nav text-on-surface-variant hover:text-primary transition-colors duration-300" href="#faq">FAQ</a>
             </div>
           </div>
-          <button className="hidden md:block bg-primary text-background font-label-caps text-label-caps px-8 py-4 hover:bg-secondary transition-colors rounded-sm">
-            COMEÇAR AGORA
-          </button>
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/login" className="font-label-nav text-label-nav text-on-surface-variant hover:text-primary transition-colors duration-300">
+              ENTRAR
+            </Link>
+            <Link href="/register" className="bg-primary text-background font-label-caps text-label-caps px-8 py-4 hover:bg-secondary transition-colors rounded-sm">
+              COMEÇAR AGORA
+            </Link>
+          </div>
           <button className="md:hidden text-primary">
             <span className="material-symbols-outlined">menu</span>
           </button>
@@ -147,27 +155,38 @@ export default function Page() {
       <main className="flex-grow pt-32">
         {/* Section 1: Hero */}
         <section className="min-h-[90vh] flex flex-col items-center justify-center relative px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto text-center mb-stack-xl pt-16">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-surface-container-high/30 via-background to-background -z-10 pointer-events-none"></div>
-          <div className="max-w-4xl mx-auto space-y-8 reveal-up">
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary leading-tight">
+          <div className="absolute inset-0 -z-10 pointer-events-none hero-glow"></div>
+
+          <div className="max-w-4xl mx-auto w-full space-y-8 reveal-up mt-8 relative z-10 py-16">
+            <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none flex items-center justify-center" style={{ maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)' }}>
+              <svg width="100%" height="150%" viewBox="0 0 1440 800" preserveAspectRatio="none" className="w-full h-full opacity-80 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <path className="string-line" d="M -100 400 Q 360 150 720 400 T 1540 400" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2.5" style={{ animationDelay: '0s', animationDuration: '8s' }} />
+                <path className="string-line" d="M -100 400 Q 360 650 720 400 T 1540 400" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2" style={{ animationDelay: '-2s', animationDuration: '11s' }} />
+                <path className="string-line" d="M -100 400 Q 360 250 720 400 T 1540 400" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" style={{ animationDelay: '-4s', animationDuration: '6s' }} />
+                <path className="string-line" d="M -100 400 Q 360 550 720 400 T 1540 400" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" style={{ animationDelay: '-6s', animationDuration: '14s' }} />
+              </svg>
+            </div>
+
+            <h1 className="font-square text-headline-lg-mobile md:text-headline-lg text-primary leading-tight font-bold tracking-tight">
               Sua rotina jurídica,<br/>sob controle.
             </h1>
             <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto leading-relaxed">
               Organize clientes, processos, prazos, tarefas e compromissos em um único lugar — sem depender da memória ou de planilhas soltas.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-              <button className="w-full sm:w-auto bg-primary text-background font-label-caps text-label-caps px-10 py-5 hover:bg-secondary transition-colors rounded-sm">
+              <Link href="/register" className="w-full sm:w-auto bg-primary text-background font-label-caps text-label-caps px-10 py-5 hover:bg-secondary transition-colors rounded-sm text-center">
                 COMEÇAR AGORA
-              </button>
-              <button className="w-full sm:w-auto border border-surface-container-high text-primary font-label-caps text-label-caps px-10 py-5 hover:bg-surface-container transition-colors tracking-widest rounded-sm">
+              </Link>
+              <a href="#produto" className="w-full sm:w-auto border border-surface-container-high text-primary font-label-caps text-label-caps px-10 py-5 hover:bg-surface-container transition-colors tracking-widest rounded-sm text-center">
                 CONHECER O JURIS.CODE
-              </button>
+              </a>
             </div>
           </div>
 
           <div className="w-full max-w-5xl mx-auto mt-24 relative reveal-up" style={{ transitionDelay: '200ms' }}>
             <div 
-              className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high ambient-glow bg-surface-container-lowest cursor-zoom-in group"
+              className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high glow-pulse floating-image bg-surface-container-lowest cursor-zoom-in group"
+              style={{ animationDelay: '0s' }}
               onClick={() => setLightboxMedia({ src: '/TelaAdm.jpg', type: 'image' })}
             >
               <img 
@@ -220,7 +239,7 @@ export default function Page() {
         {/* Section 3: Demonstração (Stacked Layout) */}
         <section className="px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto mb-stack-xl reveal-up" id="produto">
           <div className="text-center mb-16">
-            <h2 className="font-headline-lg text-headline-lg text-primary mb-6">Tudo o que você precisa.<br/>Em um só lugar.</h2>
+            <h2 className="font-square text-headline-lg text-primary mb-6 font-bold tracking-tight">Tudo o que você precisa.<br/>Em um só lugar.</h2>
           </div>
           
           <div className="space-y-32">
@@ -236,7 +255,7 @@ export default function Page() {
                 </ul>
               </div>
               <div>
-                <div className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high ambient-glow bg-surface-container-lowest cursor-zoom-in group" onClick={() => setLightboxMedia({ src: '/TelaAdm.jpg', type: 'image' })}>
+                <div className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high glow-pulse floating-image bg-surface-container-lowest cursor-zoom-in group" style={{ animationDelay: '0s' }} onClick={() => setLightboxMedia({ src: '/TelaAdm.jpg', type: 'image' })}>
                   <img src="/TelaAdm.jpg" className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-700 ease-out" alt="Painel de controle" />
                 </div>
                 <p className="text-center mt-4 font-body-md text-on-surface-variant text-sm">
@@ -257,7 +276,7 @@ export default function Page() {
                 </ul>
               </div>
               <div className="md:order-1">
-                <div className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high ambient-glow bg-surface-container-lowest cursor-zoom-in group" onClick={() => setLightboxMedia({ src: '/Agenda.jpg', type: 'image' })}>
+                <div className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high glow-pulse floating-image bg-surface-container-lowest cursor-zoom-in group" style={{ animationDelay: '-2s' }} onClick={() => setLightboxMedia({ src: '/Agenda.jpg', type: 'image' })}>
                   <img src="/Agenda.jpg" className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-700 ease-out" alt="Agenda inteligente" />
                 </div>
                 <p className="text-center mt-4 font-body-md text-on-surface-variant text-sm">
@@ -278,7 +297,7 @@ export default function Page() {
                 </ul>
               </div>
               <div>
-                <div className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high ambient-glow bg-surface-container-lowest cursor-zoom-in group" onClick={() => setLightboxMedia({ src: '/GestaoCasos.jpg', type: 'image' })}>
+                <div className="aspect-[16/10] w-full rounded-lg overflow-hidden border border-surface-container-high glow-pulse floating-image bg-surface-container-lowest cursor-zoom-in group" style={{ animationDelay: '-4s' }} onClick={() => setLightboxMedia({ src: '/GestaoCasos.jpg', type: 'image' })}>
                   <img src="/GestaoCasos.jpg" className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-700 ease-out" alt="Linha do tempo do processo" />
                 </div>
                 <p className="text-center mt-4 font-body-md text-on-surface-variant text-sm">
@@ -292,9 +311,9 @@ export default function Page() {
           <div className="mt-32 pt-16 border-t border-surface-container-high text-center">
             <h3 className="font-headline-md text-headline-md text-primary mb-3">Tudo organizado em um só lugar.</h3>
             <p className="font-body-md text-on-surface-variant mb-8">Conheça uma forma mais simples de acompanhar sua rotina jurídica.</p>
-            <button className="border border-surface-container-high text-primary font-label-caps text-label-caps px-8 py-4 hover:bg-surface-container transition-colors rounded-sm">
+            <Link href="/register" className="inline-block border border-surface-container-high text-primary font-label-caps text-label-caps px-8 py-4 hover:bg-surface-container transition-colors rounded-sm">
               COMEÇAR AGORA
-            </button>
+            </Link>
           </div>
         </section>
 
@@ -320,10 +339,10 @@ export default function Page() {
           </div>
 
           <div className="max-w-3xl mx-auto text-center border-t border-surface-container-high pt-16">
-            <p className="font-headline-lg text-headline-lg text-on-surface-variant leading-tight mb-2">
+            <p className="font-square text-headline-lg text-on-surface-variant leading-tight mb-2 font-bold tracking-tight">
               Não somos uma plataforma que também atende advogados.
             </p>
-            <p className="font-headline-lg text-headline-lg text-primary leading-tight mb-10">
+            <p className="font-square text-headline-lg text-primary leading-tight mb-10 font-bold tracking-tight">
               Somos uma plataforma construída para eles.
             </p>
             <p className="font-label-caps text-label-caps text-outline tracking-widest">
@@ -473,7 +492,7 @@ export default function Page() {
                 <li className="flex items-center gap-3"><CheckBadge /> Agenda simples</li>
                 <li className="flex items-center gap-3"><CheckBadge /> Até 50 processos</li>
               </ul>
-              <button className="w-full border border-surface-container-high text-primary font-label-caps py-4 hover:bg-surface-container transition-colors rounded-md mt-auto">COMEÇAR AGORA</button>
+              <Link href="/register" className="block w-full text-center border border-surface-container-high text-primary font-label-caps py-4 hover:bg-surface-container transition-colors rounded-md mt-auto">COMEÇAR AGORA</Link>
             </div>
             {/* Inteligente (Highlighted) */}
             <div className="border border-accent-gray p-8 bg-background text-center relative gray-glow transform scale-105 z-10 rounded-xl flex flex-col h-full">
@@ -491,7 +510,7 @@ export default function Page() {
                 <li className="flex items-center gap-3"><CheckBadge highlight /> <span className="font-bold">+</span> Planejamento semanal IA</li>
                 <li className="flex items-center gap-3"><CheckBadge highlight /> <span className="font-bold">+</span> Triagem automática</li>
               </ul>
-              <button className="w-full bg-accent-gray text-background font-label-caps py-4 hover:bg-accent-gray-dim transition-colors rounded-md mt-auto">COMEÇAR AGORA</button>
+              <Link href="/register" className="block w-full text-center bg-accent-gray text-background font-label-caps py-4 hover:bg-accent-gray-dim transition-colors rounded-md mt-auto">COMEÇAR AGORA</Link>
             </div>
             {/* Profissional */}
             <div className="border border-surface-container-high p-8 bg-surface-container-lowest text-center rounded-xl flex flex-col h-full">
@@ -505,7 +524,7 @@ export default function Page() {
                 <li className="flex items-center gap-3"><CheckBadge /> <span className="font-medium">+</span> Processos ilimitados</li>
                 <li className="flex items-center gap-3"><CheckBadge /> <span className="font-medium">+</span> Gestão de documentos</li>
               </ul>
-              <button className="w-full border border-surface-container-high text-primary font-label-caps py-4 hover:bg-surface-container transition-colors rounded-md mt-auto">COMEÇAR AGORA</button>
+              <Link href="/register" className="block w-full text-center border border-surface-container-high text-primary font-label-caps py-4 hover:bg-surface-container transition-colors rounded-md mt-auto">COMEÇAR AGORA</Link>
             </div>
           </div>
         </section>
@@ -553,9 +572,9 @@ export default function Page() {
             Sua rotina jurídica pode ser mais simples.<br/>
             <span className="text-on-surface-variant">Organize o trabalho. Tenha clareza. Trabalhe melhor.</span>
           </h2>
-          <button className="bg-primary text-background font-label-caps text-label-caps px-12 py-5 hover:bg-secondary transition-colors mt-8 rounded-sm">
+          <Link href="/register" className="inline-block bg-primary text-background font-label-caps text-label-caps px-12 py-5 hover:bg-secondary transition-colors mt-8 rounded-sm">
             COMEÇAR AGORA
-          </button>
+          </Link>
         </section>
 
         {/* Footer (Redesenhado) */}
