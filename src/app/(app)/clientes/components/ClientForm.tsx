@@ -107,7 +107,7 @@ export default function ClientForm({ action, initialData, submitLabel }: ClientF
   return (
     <form
       action={formAction}
-      className="space-y-10 max-w-3xl border border-surface-container-high bg-surface-container-lowest rounded-xl p-6 sm:p-8 shadow-2xl ambient-glow"
+      className="space-y-10 border border-surface-container-high bg-surface-container-lowest rounded-xl p-6 sm:p-8 shadow-2xl ambient-glow"
     >
       {state.error && (
         <div className="border border-surface-container-high bg-surface-container rounded-md px-4 py-3">
