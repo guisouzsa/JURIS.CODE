@@ -95,6 +95,28 @@ export async function listProcessOptions(userId: string): Promise<ProcessWithCli
   return ((data ?? []) as ProcessRow[]).map(toProcessWithClient);
 }
 
+const PROCESS_STATUSES: ProcessStatus[] = ["active", "suspended", "archived", "won", "lost", "appeal"];
+const PROCESS_AREAS: ProcessArea[] = [
+  "civil", "trabalhista", "tributario", "criminal", "familia",
+  "previdenciario", "empresarial", "consumidor", "administrativo", "outro",
+];
+
+export async function getProcessBreakdown(
+  userId: string,
+  by: "status" | "area"
+): Promise<Record<string, number>> {
+  const values: string[] = by === "status" ? PROCESS_STATUSES : PROCESS_AREAS;
+  const results = await Promise.all(
+    values.map((value) =>
+      supabaseAdmin.from("processes").select("*", { count: "exact", head: true }).eq("user_id", userId).eq(by, value)
+    )
+  );
+  return values.reduce((acc, value, i) => {
+    acc[value] = results[i].count ?? 0;
+    return acc;
+  }, {} as Record<string, number>);
+}
+
 export async function getProcessStats(userId: string) {
   const [activeRes, concludedRes, totalRes] = await Promise.all([
     supabaseAdmin.from("processes").select("*", { count: "exact", head: true }).eq("user_id", userId).eq("status", "active"),

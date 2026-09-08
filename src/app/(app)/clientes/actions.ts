@@ -119,7 +119,7 @@ export async function createClient(
     return { error: "Não foi possível salvar as informações. Verifique os dados e tente novamente." };
   }
 
-  redirect(`/clientes/${created.id}`);
+  redirect(`/clientes/${created.id}?sucesso=criado`);
 }
 
 export async function updateClient(
@@ -162,7 +162,7 @@ export async function updateClient(
     return { error: "Não foi possível salvar as informações. Verifique os dados e tente novamente." };
   }
 
-  redirect(`/clientes/${clientId}`);
+  redirect(`/clientes/${clientId}?sucesso=atualizado`);
 }
 
 export async function setClientStatus(clientId: string, status: ClientStatus) {
@@ -180,4 +180,24 @@ export async function setClientStatus(clientId: string, status: ClientStatus) {
 
   revalidatePath("/clientes");
   revalidatePath(`/clientes/${clientId}`);
+}
+
+export async function deleteClient(clientId: string): Promise<{ error?: string } | void> {
+  const userId = await requireUserId();
+
+  const { error } = await supabaseAdmin
+    .from("clients")
+    .delete()
+    .eq("id", clientId)
+    .eq("user_id", userId);
+
+  if (error) {
+    if (error.code === "23503") {
+      return { error: "Não é possível excluir este cliente: há processos vinculados a ele." };
+    }
+    return { error: "Não foi possível excluir o cliente agora. Tente novamente." };
+  }
+
+  revalidatePath("/clientes");
+  revalidatePath("/dashboard");
 }

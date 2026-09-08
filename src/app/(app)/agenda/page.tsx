@@ -10,8 +10,12 @@ import AgendaToolbar from "./components/AgendaToolbar";
 import TypeBadge from "./components/TypeBadge";
 import StatusBadge from "./components/StatusBadge";
 import PriorityBadge from "../tarefas/components/PriorityBadge";
+import SuccessBanner from "../components/SuccessBanner";
+import ConfirmDeleteButton from "../components/ConfirmDeleteButton";
+import { deleteEvent } from "./actions";
+import { deleteTask } from "../tarefas/actions";
 
-type SearchParams = { q?: string; type?: string; status?: string; passados?: string };
+type SearchParams = { q?: string; type?: string; status?: string; passados?: string; sucesso?: string };
 
 export default async function AgendaPage({
   searchParams,
@@ -75,6 +79,9 @@ export default async function AgendaPage({
 
   return (
     <div>
+      {sp.sucesso === "criado" && <SuccessBanner message="Compromisso cadastrado com sucesso." />}
+      {sp.sucesso === "atualizado" && <SuccessBanner message="Compromisso atualizado com sucesso." />}
+
       <header className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div className="space-y-1.5">
           <h1 className="text-2xl font-semibold text-primary">Agenda</h1>
@@ -187,6 +194,14 @@ export default async function AgendaPage({
                         >
                           <span className="material-symbols-outlined text-lg">edit</span>
                         </Link>
+                        <ConfirmDeleteButton
+                          onConfirm={
+                            item.kind === "event"
+                              ? deleteEvent.bind(null, item.id)
+                              : deleteTask.bind(null, item.id)
+                          }
+                          itemLabel={item.kind === "event" ? "este compromisso" : "esta tarefa"}
+                        />
                       </div>
                     </td>
                   </tr>

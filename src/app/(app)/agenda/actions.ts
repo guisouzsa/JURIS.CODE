@@ -96,7 +96,7 @@ export async function createEvent(
   revalidatePath("/dashboard");
   if (payload.client_id) revalidatePath(`/clientes/${payload.client_id}`);
   if (payload.process_id) revalidatePath(`/processos/${payload.process_id}`);
-  redirect("/agenda");
+  redirect("/agenda?sucesso=criado");
 }
 
 export async function updateEvent(
@@ -126,7 +126,7 @@ export async function updateEvent(
   revalidatePath("/dashboard");
   if (payload.client_id) revalidatePath(`/clientes/${payload.client_id}`);
   if (payload.process_id) revalidatePath(`/processos/${payload.process_id}`);
-  redirect("/agenda");
+  redirect("/agenda?sucesso=atualizado");
 }
 
 export async function setEventStatus(eventId: string, status: EventStatus) {
@@ -140,6 +140,23 @@ export async function setEventStatus(eventId: string, status: EventStatus) {
 
   if (error) {
     throw new Error("Não foi possível atualizar o status do evento.");
+  }
+
+  revalidatePath("/agenda");
+  revalidatePath("/dashboard");
+}
+
+export async function deleteEvent(eventId: string): Promise<{ error?: string } | void> {
+  const userId = await requireUserId();
+
+  const { error } = await supabaseAdmin
+    .from("agenda_events")
+    .delete()
+    .eq("id", eventId)
+    .eq("user_id", userId);
+
+  if (error) {
+    return { error: "Não foi possível excluir o compromisso agora. Tente novamente." };
   }
 
   revalidatePath("/agenda");

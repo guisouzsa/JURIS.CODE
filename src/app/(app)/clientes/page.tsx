@@ -9,6 +9,8 @@ import type { ClientStatus } from "./types";
 import ClientsToolbar from "./components/ClientsToolbar";
 import StatusBadge from "./components/StatusBadge";
 import ClientStatusAction from "./components/ClientStatusAction";
+import ConfirmDeleteButton from "../components/ConfirmDeleteButton";
+import { deleteClient } from "./actions";
 
 type SearchParams = { q?: string; status?: string; type?: string; page?: string };
 
@@ -135,6 +137,10 @@ export default async function ClientsPage({
                         <span className="material-symbols-outlined text-lg">edit</span>
                       </Link>
                       <ClientStatusAction clientId={client.id} status={client.status} />
+                      <ConfirmDeleteButton
+                        onConfirm={deleteClient.bind(null, client.id)}
+                        itemLabel="este cliente"
+                      />
                     </div>
                   </td>
                 </tr>

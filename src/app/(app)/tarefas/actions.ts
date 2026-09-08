@@ -91,7 +91,7 @@ export async function createTask(
   revalidatePath("/dashboard");
   if (payload.client_id) revalidatePath(`/clientes/${payload.client_id}`);
   if (payload.process_id) revalidatePath(`/processos/${payload.process_id}`);
-  redirect("/tarefas");
+  redirect("/tarefas?sucesso=criado");
 }
 
 export async function updateTask(
@@ -121,7 +121,7 @@ export async function updateTask(
   revalidatePath("/dashboard");
   if (payload.client_id) revalidatePath(`/clientes/${payload.client_id}`);
   if (payload.process_id) revalidatePath(`/processos/${payload.process_id}`);
-  redirect("/tarefas");
+  redirect("/tarefas?sucesso=atualizado");
 }
 
 export async function setTaskStatus(taskId: string, status: TaskStatus) {
@@ -135,6 +135,23 @@ export async function setTaskStatus(taskId: string, status: TaskStatus) {
 
   if (error) {
     throw new Error("Não foi possível atualizar o status da tarefa.");
+  }
+
+  revalidatePath("/tarefas");
+  revalidatePath("/dashboard");
+}
+
+export async function deleteTask(taskId: string): Promise<{ error?: string } | void> {
+  const userId = await requireUserId();
+
+  const { error } = await supabaseAdmin
+    .from("tasks")
+    .delete()
+    .eq("id", taskId)
+    .eq("user_id", userId);
+
+  if (error) {
+    return { error: "Não foi possível excluir a tarefa agora. Tente novamente." };
   }
 
   revalidatePath("/tarefas");

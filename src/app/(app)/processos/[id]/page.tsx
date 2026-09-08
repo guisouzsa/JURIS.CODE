@@ -6,6 +6,9 @@ import { getProcess } from "../data";
 import { AREA_LABELS, INSTANCE_LABELS } from "../types";
 import StatusBadge from "../components/StatusBadge";
 import ProcessStatusSelect from "../components/ProcessStatusSelect";
+import SuccessBanner from "../../components/SuccessBanner";
+import ConfirmDeleteButton from "../../components/ConfirmDeleteButton";
+import { deleteProcess } from "../actions";
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
@@ -17,8 +20,15 @@ function InfoRow({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-export default async function ProcessDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProcessDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ sucesso?: string }>;
+}) {
   const { id } = await params;
+  const { sucesso } = await searchParams;
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
@@ -31,6 +41,9 @@ export default async function ProcessDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="space-y-6 max-w-5xl">
+      {sucesso === "criado" && <SuccessBanner message="Processo cadastrado com sucesso." />}
+      {sucesso === "atualizado" && <SuccessBanner message="Processo atualizado com sucesso." />}
+
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -55,6 +68,12 @@ export default async function ProcessDetailPage({ params }: { params: Promise<{ 
             EDITAR
           </Link>
           <ProcessStatusSelect processId={process.id} status={process.status} />
+          <ConfirmDeleteButton
+            onConfirm={deleteProcess.bind(null, process.id)}
+            itemLabel="este processo"
+            variant="button"
+            redirectTo="/processos"
+          />
         </div>
       </div>
 

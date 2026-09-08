@@ -123,6 +123,25 @@ export async function listTasksWithDueDate(userId: string, fromDate?: string): P
   return ((data ?? []) as TaskRow[]).map(toTaskWithRelations);
 }
 
+const TASK_STATUSES: TaskStatus[] = ["pending", "in_progress", "done", "canceled"];
+const TASK_PRIORITIES: TaskPriority[] = ["low", "medium", "high"];
+
+export async function getTaskBreakdown(
+  userId: string,
+  by: "status" | "priority"
+): Promise<Record<string, number>> {
+  const values: string[] = by === "status" ? TASK_STATUSES : TASK_PRIORITIES;
+  const results = await Promise.all(
+    values.map((value) =>
+      supabaseAdmin.from("tasks").select("*", { count: "exact", head: true }).eq("user_id", userId).eq(by, value)
+    )
+  );
+  return values.reduce((acc, value, i) => {
+    acc[value] = results[i].count ?? 0;
+    return acc;
+  }, {} as Record<string, number>);
+}
+
 export async function getTaskStats(userId: string) {
   const today = new Date().toISOString().slice(0, 10);
   const [pendingRes, overdueRes] = await Promise.all([

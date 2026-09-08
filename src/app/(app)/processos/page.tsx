@@ -8,6 +8,8 @@ import type { ProcessArea, ProcessStatus } from "./types";
 import { AREA_LABELS } from "./types";
 import ProcessesToolbar from "./components/ProcessesToolbar";
 import StatusBadge from "./components/StatusBadge";
+import ConfirmDeleteButton from "../components/ConfirmDeleteButton";
+import { deleteProcess } from "./actions";
 
 type SearchParams = { q?: string; status?: string; area?: string; page?: string };
 
@@ -134,6 +136,10 @@ export default async function ProcessesPage({
                       >
                         <span className="material-symbols-outlined text-lg">edit</span>
                       </Link>
+                      <ConfirmDeleteButton
+                        onConfirm={deleteProcess.bind(null, process.id)}
+                        itemLabel="este processo"
+                      />
                     </div>
                   </td>
                 </tr>

@@ -6,6 +6,8 @@ import { getTask } from "../data";
 import StatusBadge from "../components/StatusBadge";
 import PriorityBadge from "../components/PriorityBadge";
 import TaskStatusSelect from "../components/TaskStatusSelect";
+import ConfirmDeleteButton from "../../components/ConfirmDeleteButton";
+import { deleteTask } from "../actions";
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
@@ -46,6 +48,12 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
             EDITAR
           </Link>
           <TaskStatusSelect taskId={task.id} status={task.status} />
+          <ConfirmDeleteButton
+            onConfirm={deleteTask.bind(null, task.id)}
+            itemLabel="esta tarefa"
+            variant="button"
+            redirectTo="/tarefas"
+          />
         </div>
       </div>
 

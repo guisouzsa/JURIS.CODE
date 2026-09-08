@@ -6,6 +6,7 @@ export type ClientListFilters = {
   status?: ClientStatus | "all";
   personType?: "individual" | "company" | "all";
   page?: number;
+  orderBy?: "recent" | "name";
 };
 
 export const CLIENTS_PAGE_SIZE = 20;
@@ -36,7 +37,12 @@ export async function listClients(userId: string, filters: ClientListFilters) {
   const from = (page - 1) * CLIENTS_PAGE_SIZE;
   const to = from + CLIENTS_PAGE_SIZE - 1;
 
-  const { data, error, count } = await query.order("created_at", { ascending: false }).range(from, to);
+  query =
+    filters.orderBy === "name"
+      ? query.order("full_name", { ascending: true })
+      : query.order("created_at", { ascending: false });
+
+  const { data, error, count } = await query.range(from, to);
 
   if (error) throw new Error("Não foi possível carregar os clientes agora.");
   return { clients: (data ?? []) as Client[], total: count ?? 0, page };
@@ -76,6 +82,20 @@ export async function listRecentClients(
     .limit(limit);
 
   return data ?? [];
+}
+
+const CLIENT_STATUSES: ClientStatus[] = ["active", "inactive", "prospect", "former"];
+
+export async function getClientStatusBreakdown(userId: string): Promise<Record<ClientStatus, number>> {
+  const results = await Promise.all(
+    CLIENT_STATUSES.map((status) =>
+      supabaseAdmin.from("clients").select("*", { count: "exact", head: true }).eq("user_id", userId).eq("status", status)
+    )
+  );
+  return CLIENT_STATUSES.reduce((acc, status, i) => {
+    acc[status] = results[i].count ?? 0;
+    return acc;
+  }, {} as Record<ClientStatus, number>);
 }
 
 export async function getClientStats(userId: string) {

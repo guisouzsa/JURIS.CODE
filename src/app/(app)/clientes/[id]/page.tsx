@@ -10,6 +10,9 @@ import ClientStatusAction from "../components/ClientStatusAction";
 import ClientTabs from "../components/ClientTabs";
 import { listProcessesByClient } from "../../processos/data";
 import { listTasksByClient } from "../../tarefas/data";
+import SuccessBanner from "../../components/SuccessBanner";
+import ConfirmDeleteButton from "../../components/ConfirmDeleteButton";
+import { deleteClient } from "../actions";
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
@@ -21,8 +24,15 @@ function InfoRow({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ClientDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ sucesso?: string }>;
+}) {
   const { id } = await params;
+  const { sucesso } = await searchParams;
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
@@ -39,6 +49,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
   return (
     <div className="space-y-6 max-w-5xl">
+      {sucesso === "criado" && <SuccessBanner message="Cliente cadastrado com sucesso." />}
+      {sucesso === "atualizado" && <SuccessBanner message="Cliente atualizado com sucesso." />}
+
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -58,6 +71,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
             EDITAR
           </Link>
           <ClientStatusAction clientId={client.id} status={client.status} />
+          <ConfirmDeleteButton
+            onConfirm={deleteClient.bind(null, client.id)}
+            itemLabel="este cliente"
+            variant="button"
+            redirectTo="/clientes"
+          />
         </div>
       </div>
 

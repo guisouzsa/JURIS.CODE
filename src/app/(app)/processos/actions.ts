@@ -110,7 +110,7 @@ export async function createProcess(
 
   revalidatePath("/processos");
   revalidatePath(`/clientes/${payload.client_id}`);
-  redirect(`/processos/${created.id}`);
+  redirect(`/processos/${created.id}?sucesso=criado`);
 }
 
 export async function updateProcess(
@@ -153,7 +153,7 @@ export async function updateProcess(
   revalidatePath("/processos");
   revalidatePath(`/processos/${processId}`);
   revalidatePath(`/clientes/${payload.client_id}`);
-  redirect(`/processos/${processId}`);
+  redirect(`/processos/${processId}?sucesso=atualizado`);
 }
 
 export async function setProcessStatus(processId: string, status: ProcessStatus) {
@@ -174,4 +174,24 @@ export async function setProcessStatus(processId: string, status: ProcessStatus)
   revalidatePath("/processos");
   revalidatePath(`/processos/${processId}`);
   revalidatePath(`/clientes/${process.client_id}`);
+}
+
+export async function deleteProcess(processId: string): Promise<{ error?: string } | void> {
+  const userId = await requireUserId();
+
+  const { data: process, error } = await supabaseAdmin
+    .from("processes")
+    .delete()
+    .eq("id", processId)
+    .eq("user_id", userId)
+    .select("client_id")
+    .maybeSingle();
+
+  if (error) {
+    return { error: "Não foi possível excluir o processo agora. Tente novamente." };
+  }
+
+  revalidatePath("/processos");
+  revalidatePath("/dashboard");
+  if (process?.client_id) revalidatePath(`/clientes/${process.client_id}`);
 }

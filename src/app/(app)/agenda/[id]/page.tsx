@@ -6,6 +6,8 @@ import { getEvent } from "../data";
 import TypeBadge from "../components/TypeBadge";
 import StatusBadge from "../components/StatusBadge";
 import EventStatusSelect from "../components/EventStatusSelect";
+import ConfirmDeleteButton from "../../components/ConfirmDeleteButton";
+import { deleteEvent } from "../actions";
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
@@ -47,6 +49,12 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
             EDITAR
           </Link>
           <EventStatusSelect eventId={event.id} status={event.status} />
+          <ConfirmDeleteButton
+            onConfirm={deleteEvent.bind(null, event.id)}
+            itemLabel="este compromisso"
+            variant="button"
+            redirectTo="/agenda"
+          />
         </div>
       </div>
 

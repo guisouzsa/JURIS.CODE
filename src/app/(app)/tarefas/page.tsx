@@ -8,8 +8,11 @@ import type { TaskPriority, TaskStatus } from "./types";
 import TasksToolbar from "./components/TasksToolbar";
 import StatusBadge from "./components/StatusBadge";
 import PriorityBadge from "./components/PriorityBadge";
+import SuccessBanner from "../components/SuccessBanner";
+import ConfirmDeleteButton from "../components/ConfirmDeleteButton";
+import { deleteTask } from "./actions";
 
-type SearchParams = { q?: string; status?: string; priority?: string; page?: string };
+type SearchParams = { q?: string; status?: string; priority?: string; page?: string; sucesso?: string };
 
 export default async function TasksPage({
   searchParams,
@@ -35,6 +38,9 @@ export default async function TasksPage({
 
   return (
     <div>
+      {sp.sucesso === "criado" && <SuccessBanner message="Tarefa cadastrada com sucesso." />}
+      {sp.sucesso === "atualizado" && <SuccessBanner message="Tarefa atualizada com sucesso." />}
+
       <header className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div className="space-y-1.5">
           <h1 className="text-2xl font-semibold text-primary">Tarefas</h1>
@@ -139,6 +145,10 @@ export default async function TasksPage({
                         >
                           <span className="material-symbols-outlined text-lg">edit</span>
                         </Link>
+                        <ConfirmDeleteButton
+                          onConfirm={deleteTask.bind(null, task.id)}
+                          itemLabel="esta tarefa"
+                        />
                       </div>
                     </td>
                   </tr>
