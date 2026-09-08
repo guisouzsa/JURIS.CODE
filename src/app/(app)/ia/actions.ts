@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
-import { GoogleGenAI, type Content, type Part } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel, type Content, type Part } from "@google/genai";
 import { authOptions } from "@/app/lib/auth";
 import { ASSISTANT_TOOLS, runAssistantTool } from "./tools";
 
@@ -49,6 +49,9 @@ export async function askAssistant(history: ChatMessage[]): Promise<AssistantRes
   const config = {
     systemInstruction: buildSystemInstruction(),
     tools: [{ functionDeclarations: ASSISTANT_TOOLS }],
+    // As perguntas são curtas e as ferramentas já são bem descritas — não precisa de raciocínio
+    // extenso. Isso corta bastante latência e custo sem perder a escolha certa da ferramenta.
+    thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
   };
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
