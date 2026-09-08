@@ -18,7 +18,7 @@ export const config = {
     "/agenda/:path*",
     "/tarefas/:path*",
     "/clientes/:path*",
-    "/casos/:path*",
+    "/processos/:path*",
     "/ia/:path*",
     "/configuracoes/:path*",
     "/perfil/:path*",

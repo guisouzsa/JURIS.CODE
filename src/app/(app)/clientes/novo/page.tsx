@@ -1,5 +1,5 @@
 import ClientForm from "../components/ClientForm";
-import FormModal from "../components/FormModal";
+import FormModal from "../../components/FormModal";
 import { createClient } from "../actions";
 
 export default function NewClientPage() {

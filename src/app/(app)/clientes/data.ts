@@ -52,3 +52,40 @@ export async function getClient(id: string, userId: string): Promise<Client | nu
 
   return (data as Client | null) ?? null;
 }
+
+export async function listClientOptions(userId: string): Promise<Pick<Client, "id" | "full_name">[]> {
+  const { data } = await supabaseAdmin
+    .from("clients")
+    .select("id, full_name")
+    .eq("user_id", userId)
+    .neq("status", "inactive")
+    .order("full_name", { ascending: true });
+
+  return data ?? [];
+}
+
+export async function listRecentClients(
+  userId: string,
+  limit: number
+): Promise<Pick<Client, "id" | "full_name" | "status" | "created_at">[]> {
+  const { data } = await supabaseAdmin
+    .from("clients")
+    .select("id, full_name, status, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  return data ?? [];
+}
+
+export async function getClientStats(userId: string) {
+  const [activeRes, totalRes] = await Promise.all([
+    supabaseAdmin.from("clients").select("*", { count: "exact", head: true }).eq("user_id", userId).eq("status", "active"),
+    supabaseAdmin.from("clients").select("*", { count: "exact", head: true }).eq("user_id", userId),
+  ]);
+
+  return {
+    active: activeRes.count ?? 0,
+    total: totalRes.count ?? 0,
+  };
+}

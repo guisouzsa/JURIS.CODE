@@ -3,7 +3,7 @@ export const NAV_ITEMS = [
   { href: "/agenda", label: "Agenda", icon: "calendar_month" },
   { href: "/tarefas", label: "Tarefas", icon: "task_alt" },
   { href: "/clientes", label: "Clientes", icon: "group" },
-  { href: "/casos", label: "Casos", icon: "gavel" },
+  { href: "/processos", label: "Processos", icon: "gavel" },
   { href: "/ia", label: "Assistente IA", icon: "auto_awesome" },
 ];
 

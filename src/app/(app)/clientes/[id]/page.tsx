@@ -8,6 +8,8 @@ import { SOURCE_LABELS } from "../types";
 import StatusBadge from "../components/StatusBadge";
 import ClientStatusAction from "../components/ClientStatusAction";
 import ClientTabs from "../components/ClientTabs";
+import { listProcessesByClient } from "../../processos/data";
+import { listTasksByClient } from "../../tarefas/data";
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
@@ -26,6 +28,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
   const client = await getClient(id, session.user.id);
   if (!client) notFound();
+
+  const [processes, tasks] = await Promise.all([
+    listProcessesByClient(client.id, session.user.id),
+    listTasksByClient(client.id, session.user.id),
+  ]);
 
   const address = [client.street, client.address_number].filter(Boolean).join(", ");
   const cityState = [client.city, client.state].filter(Boolean).join(" - ");
@@ -80,7 +87,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         )}
       </div>
 
-      <ClientTabs />
+      <ClientTabs clientId={client.id} processes={processes} tasks={tasks} />
     </div>
   );
 }

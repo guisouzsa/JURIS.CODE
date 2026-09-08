@@ -92,17 +92,9 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <label htmlFor="password" className="font-label-caps text-label-caps text-on-surface-variant">
-              Senha
-            </label>
-            <button
-              type="button"
-              className="font-body-md text-on-surface-variant text-sm hover:text-primary transition-colors"
-            >
-              Esqueci minha senha
-            </button>
-          </div>
+          <label htmlFor="password" className="font-label-caps text-label-caps text-on-surface-variant block mb-2">
+            Senha
+          </label>
           <div className="relative">
             <input
               id="password"

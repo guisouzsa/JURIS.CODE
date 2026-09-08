@@ -28,17 +28,20 @@ function Field({
   label,
   htmlFor,
   error,
+  required,
   children,
 }: {
   label: string;
   htmlFor: string;
   error?: string;
+  required?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div>
       <label htmlFor={htmlFor} className="font-label-caps text-label-caps text-on-surface-variant block mb-1.5">
         {label}
+        {required && <span className="text-error ml-0.5">*</span>}
       </label>
       {children}
       {error && <p className="text-error text-sm mt-1.5">{error}</p>}
@@ -118,7 +121,7 @@ export default function ClientForm({ action, initialData, submitLabel }: ClientF
       <section className="space-y-5">
         <h2 className="text-lg font-semibold text-primary">Identificação</h2>
 
-        <Field label="Tipo de cliente" htmlFor="person_type" error={errors.person_type}>
+        <Field label="Tipo de cliente" htmlFor="person_type" error={errors.person_type} required>
           <select
             id="person_type"
             name="person_type"
@@ -135,6 +138,7 @@ export default function ClientForm({ action, initialData, submitLabel }: ClientF
           label={isCompany ? "Razão social" : "Nome completo"}
           htmlFor="full_name"
           error={errors.full_name}
+          required
         >
           <input
             id="full_name"
@@ -159,7 +163,7 @@ export default function ClientForm({ action, initialData, submitLabel }: ClientF
           </Field>
         )}
 
-        <Field label={isCompany ? "CNPJ" : "CPF"} htmlFor="document_number" error={errors.document_number}>
+        <Field label={isCompany ? "CNPJ" : "CPF"} htmlFor="document_number" error={errors.document_number} required>
           <input
             id="document_number"
             name="document_number"
@@ -218,6 +222,9 @@ export default function ClientForm({ action, initialData, submitLabel }: ClientF
 
       <section className="space-y-5 pt-8 border-t border-surface-container-high">
         <h2 className="text-lg font-semibold text-primary">Contato</h2>
+        <p className="font-body-md text-on-surface-variant text-xs -mt-3">
+          Informe ao menos um contato: e-mail ou telefone.
+        </p>
 
         <Field label="E-mail" htmlFor="email" error={errors.email}>
           <input
